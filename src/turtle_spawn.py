@@ -5,7 +5,7 @@ from turtlesim.srv import Spawn
 
 class SimpleSpawner(Node):
     def __init__(self):
-        super().__init__('simple_spawner')
+        super().__init__('simple_spawner') #nome del nodo
         self.spawn_client = self.create_client(Spawn, '/spawn')
 
         # Attende che il servizio spawn sia disponibile
