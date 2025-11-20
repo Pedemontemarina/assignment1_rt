@@ -36,6 +36,6 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(PROGRAMS src/turtle_spawn.py DESTINATION lib/${PROJECT_NAME})
+install(PROGRAMS scripts/turtle_spawn.py DESTINATION lib/${PROJECT_NAME} RENAME turtle_spawn)
 
 ament_package()
