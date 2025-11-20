@@ -11,6 +11,19 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+find_package(rclcpp REQUIRED)
+find_package(turtlesim REQUIRED) 
+find_package(geometry_msgs REQUIRED)
+
+add_executable(ui_node src/user_interface.cpp)
+
+#nodo ed eseguibile con lo stesso nome (convenzione)
+
+# Serve a collegare correttamente le librerie ROS2 al tuo eseguibile
+ament_target_dependencies(ui_node rclcpp turtlesim geometry_msgs)
+
+install(TARGETS ui_node DESTINATION lib/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
