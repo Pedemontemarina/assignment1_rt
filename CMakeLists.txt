@@ -17,7 +17,6 @@ find_package(geometry_msgs REQUIRED)
 
 add_executable(ui_node src/user_interface.cpp)
 
-#nodo ed eseguibile con lo stesso nome (convenzione)
 
 # Serve a collegare correttamente le librerie ROS2 al tuo eseguibile
 ament_target_dependencies(ui_node rclcpp turtlesim geometry_msgs)
@@ -37,5 +36,7 @@ if(BUILD_TESTING)
 endif()
 
 install(PROGRAMS scripts/turtle_spawn.py DESTINATION lib/${PROJECT_NAME} RENAME turtle_spawn)
+install(PROGRAMS scripts/distance.py DESTINATION lib/${PROJECT_NAME} RENAME distance_node)
+
 
 ament_package()

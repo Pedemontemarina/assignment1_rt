@@ -27,7 +27,6 @@ loop infinito:
     ferma la tartaruga (Twist a zero)
 */
 
-// AGGIORNA DIPENDENZEEEEE
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
@@ -38,7 +37,7 @@ loop infinito:
 class TurtleController : public rclcpp::Node
 {
 public:
-    TurtleController() : Node("user_input_turtle_controller")
+    TurtleController() : Node("ui_node")
     {
         // Publisher per turtle1 e turtle2
         pub_turtle1_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel", 10);
@@ -46,28 +45,30 @@ public:
     }
 
     // ======================
-    // Loop input utente
+    // Loop user input
     // ======================
     void user_input_loop()
     {
-        while (rclcpp::ok())
+        while (rclcpp::ok()) //Check rclcpp’s status
         {
-            std::string turtle_name;
+            std::string turtle_name;C
             float linear_vel, angular_vel;
 
-            // --- Input utente ---
             std::cout << "Select which turtle to control (turtle1/turtle2): ";
             std::cin >> turtle_name;
             if (turtle_name != "turtle1" && turtle_name != "turtle2")
             {
                 std::cout << "Name not valid!" << std::endl;
-                continue;
+                continue; // restart loop
             }
+
+            // TESTA SE DAI UN NUMERO
+
             std::cout << "Linear velocity: ";
             std::cin >> linear_vel; // geomtry_msg::Twist float64
             if (std::cin.fail())
             {
-                std::cin.clear();                                                   // error flag clearing
+                std::cin.clear();       // error flag clearing
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard input
                 std::cout << "Input not valid!" << std::endl;
                 continue;
@@ -77,7 +78,7 @@ public:
             std::cin >> angular_vel;
             if (std::cin.fail())
             {
-                std::cin.clear();                                                   // error flag clearing
+                std::cin.clear();             // error flag clearing
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard input
                 std::cout << "Input not valid!" << std::endl;
                 continue;
@@ -123,11 +124,14 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_turtle2_;
 };
 
+//Everything under private is NOT accessible from outside 
+//so only the class itself can see these variables or functions.
+
 int main(int argc, char *argv[])
 {
-    rclcpp::init(argc, argv);
-    auto node = std::make_shared<TurtleController>();
-    node->user_input_loop();
-    rclcpp::shutdown();
+    rclcpp::init(argc, argv); //initialize ROS2
+    auto node = std::make_shared<TurtleController>(); //create node
+    node->user_input_loop(); //start user input loop
+    rclcpp::shutdown(); //shutdown ROS2
     return 0;
 }
