@@ -1,3 +1,5 @@
+
+
 /*
 ✓Implement a simple textual interface to retrieve the user command
 (i.e., you can use cin (c++) or input (python). The user should be able to
@@ -51,7 +53,7 @@ public:
     {
         while (rclcpp::ok()) //Check rclcpp’s status
         {
-            std::string turtle_name;C
+            std::string turtle_name;
             float linear_vel, angular_vel;
 
             std::cout << "Select which turtle to control (turtle1/turtle2): ";

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''Distance (node2):
 
  ✓A node that checks the relative distance between turtle1 and turtle2 and:
@@ -61,31 +63,36 @@ class DistanceController(Node):
             Float32,
             'distance_topic', # topic name
              10) 
+        
+        #---------- timer to periodically check distance ------------
+        self.timer = self.create_timer(0.1, self.timer_callback)  # 0.1s = 10 Hz
 
     def poset1_callback(self, msg):
         self.x1_ = msg.x # float
         self.y1_ = msg.y
-        self.check_distance()
+            
     
     def poset2_callback(self, msg):
         self.x2_ = msg.x
         self.y2_ = msg.y
-        self.check_distance()
-    
-    def check_distance(self):
-        distance = math.sqrt((self.x2_ - self.x1_)**2 + (self.y2_ - self.y1_)**2)
+
+
+    def timer_callback(self):
         if None in (self.x1_, self.y1_, self.x2_, self.y2_):
-            return  # wait until all positions are received
+            return
+        distance = math.sqrt((self.x2_ - self.x1_)**2 + (self.y2_ - self.y1_)**2)
+        self.get_logger().info(f'Distance: {distance:.2f}') # to see distance in terminal
 
         # pubblish distance
         msg = Float32()
         msg.data = distance
         self.dist_pub.publish(msg)
+            
+        # controls: between eachother and boundaries
+       
 
+    
 
-        # make control
-
-        return distance
 
 def main(args=None):
     rclpy.init(args=args)
