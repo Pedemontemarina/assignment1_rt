@@ -1,5 +1,3 @@
-
-
 /*
 ✓Implement a simple textual interface to retrieve the user command
 (i.e., you can use cin (c++) or input (python). The user should be able to
@@ -8,25 +6,6 @@ of the robot.
 
 ✓The command should be sent for 1 second, and then the robot should
 stop, and the user should be able again to insert the command.
-
-1) chiedere all'utente quale tartaruga controllare
-
-2) utente inserisce velocità
-
-3) invio il comando per 1s e poi la tarta si ferma
-
-4) l'interfaccia torna all'utente
-
-inizializza nodo ROS
-crea publisher su /turtle1/cmd_vel e /turtle2/cmd_vel
-
-loop infinito:
-    chiedi all’utente quale tartaruga controllare
-    chiedi velocità lineare e angolare
-    crea messaggio Twist
-    pubblica comando
-    aspetta 1 secondo
-    ferma la tartaruga (Twist a zero)
 */
 
 
@@ -46,9 +25,7 @@ public:
         pub_turtle2_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle2/cmd_vel", 10);
     }
 
-    // ======================
     // Loop user input
-    // ======================
     void user_input_loop()
     {
         while (rclcpp::ok()) //Check rclcpp’s status
@@ -64,7 +41,6 @@ public:
                 continue; // restart loop
             }
 
-            // TESTA SE DAI UN NUMERO
 
             std::cout << "Linear velocity: ";
             std::cin >> linear_vel; // geomtry_msg::Twist float64
