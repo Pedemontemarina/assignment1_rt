@@ -38,5 +38,6 @@ endif()
 install(PROGRAMS scripts/turtle_spawn.py DESTINATION lib/${PROJECT_NAME} RENAME turtle_spawn)
 install(PROGRAMS scripts/distance.py DESTINATION lib/${PROJECT_NAME} RENAME distance_node)
 
+install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/)
 
 ament_package()

@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 
-# PUBBLICA LA DISTANZA SOLO SE è DIVERSA DALLA PRECEDENTE
-# FAI TORNARE LA TARTA INDIETROOOOO QUANDO SI AVVICINA AI BORDI
-# controlla che funzioni bene!
-# fai uno script per testare
-
-
 '''Distance (node2):
 
  ✓A node that checks the relative distance between turtle1 and turtle2 and:
@@ -44,6 +38,9 @@ class DistanceController(Node):
         self.t1_vel = Twist()
         self.t2_vel = Twist()
 
+        self.last_distance = None # to store the last published distance
+
+
         # ---------subscribers for turtle poses------------
         self.create_subscription(
              Pose,                  # type of message 
@@ -64,6 +61,10 @@ class DistanceController(Node):
         self.vel_pub1 = self.create_publisher(Twist,'/turtle1/cmd_vel',10)
         self.vel_pub2 = self.create_publisher(Twist,'/turtle2/cmd_vel',10)
 
+        #---------- timer to call controls function periodically ------------
+        self.create_timer(0.1, self.controls) 
+
+
 
     def poset1_callback(self, msg):
         self.x1_ = msg.x # float
@@ -75,11 +76,9 @@ class DistanceController(Node):
     
     def t1_vel_callback(self, msg):
         self.t1_vel = msg
-        self.controls()
 
     def t2_vel_callback(self, msg):
         self.t2_vel = msg
-        self.controls()
     
 
 # function to determine which turtle is moving
@@ -100,34 +99,42 @@ class DistanceController(Node):
 
         if None in (self.x1_, self.y1_, self.x2_, self.y2_):
             return
-
-        threshold_distance = 0.5  # set your threshold here
-        boundary_limit_min = 1.0
-        boundary_limit_max = 10.0
-        twist = Twist()  # zero velocities
-
         distance = math.sqrt((self.x2_ - self.x1_)**2 + (self.y2_ - self.y1_)**2)
-        self.get_logger().info(f'Distance: {distance:.2f}') # to see distance in terminal
+
+        #print only if the distance is different from previous one
+        
+        if self.last_distance is None or abs(distance - self.last_distance) > 0.01:
+            self.get_logger().info(f'Distance: {distance:.2f}')
+            self.last_distance = distance
 
         # pubblish distance 
         msg = Float32()
         msg.data = distance
         self.dist_pub.publish(msg)
 
-        
+        threshold_distance = 0.5  # set your threshold here
+        boundary_limit_min = 1.0
+        boundary_limit_max = 10.0
+        twist = Twist()  # zero velocities
+        back_speed = -1.0 # backward speed
+
+
         # Check relative distance
         if distance < threshold_distance and moving is not None:
             self.get_logger().warning(f'{moving} is moving and too close: stopping it!')
             # stop the moving turtle
             if moving == "turtle1":
+                twist.linear.x = back_speed
                 self.vel_pub1.publish(twist)
             elif moving == "turtle2":
+                twist.linear.x = back_speed
                 self.vel_pub2.publish(twist)
         
         # Check boundaries for turtle1
         if (self.x1_ < boundary_limit_min or self.x1_ > boundary_limit_max or
             self.y1_ < boundary_limit_min or self.y1_ > boundary_limit_max):
             self.get_logger().warning('Turtle1 is too close to the boundary! Stopping turtle1.')
+            twist.linear.x = back_speed
             self.vel_pub1.publish(twist)
     
 
@@ -135,6 +142,7 @@ class DistanceController(Node):
         if (self.x2_ < boundary_limit_min or self.x2_ > boundary_limit_max or
             self.y2_ < boundary_limit_min or self.y2_ > boundary_limit_max):
             self.get_logger().warning('Turtle2 is too close to the boundary! Stopping turtle2.')
+            twist.linear.x = back_speed
             self.vel_pub2.publish(twist)
 
 
