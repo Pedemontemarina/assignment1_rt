@@ -30,6 +30,7 @@ The package `assignment1_rt` contains:
 
 ## 2. Directory Structure
 
+```bash
 ASSIGNMENT1_RT
 .
 ├── CMakeLists.txt
@@ -45,6 +46,8 @@ ASSIGNMENT1_RT
 ├── src
 │   └── user_interface.cpp
 └── start_all.sh
+
+```
 
 ## 3. Installation
 
