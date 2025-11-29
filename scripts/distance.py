@@ -90,9 +90,7 @@ class DistanceController(Node):
             return "turtle1"
         if abs(self.t2_vel.linear.x) > 0.001 or abs(self.t2_vel.angular.z) > 0.001:
             return "turtle2"
-        return None
-     
-# controls: between eachother and boundaries
+        return None     
 
     def controls(self):
         
@@ -110,7 +108,7 @@ class DistanceController(Node):
             self.get_logger().info(f'Distance: {distance:.2f}')
             self.last_distance = distance
 
-        # pubblish distance 
+        # publish distance 
         msg = Float32()
         msg.data = distance
         self.dist_pub.publish(msg)

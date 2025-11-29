@@ -5,14 +5,14 @@ from turtlesim.srv import Spawn
 
 class SimpleSpawner(Node):
     def __init__(self):
-        super().__init__('simple_spawner') #nome del nodo
+        super().__init__('simple_spawner') # name of the node
         self.spawn_client = self.create_client(Spawn, '/spawn')
 
-        # Attende che il servizio spawn sia disponibile
+        # wait for the service to be available
         while not self.spawn_client.wait_for_service(timeout_sec=1.0):
             self.get_logger().info("waiting for /spawn...")
 
-        # Richiesta per spawn
+        # spawn request
         req = Spawn.Request()
         req.x = 7.0
         req.y = 7.0

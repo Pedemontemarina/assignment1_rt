@@ -6,7 +6,7 @@ def generate_launch_description():
 
     return LaunchDescription([
 
-        # 1) TURTLESIM NODE
+        # TURTLESIM NODE
         Node(
             package='turtlesim',
             executable='turtlesim_node',
@@ -14,7 +14,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # 2) TURTLE_SPAWN (python)
+        # TURTLE_SPAWN 
         Node(
             package='assignment1_rt',
             executable='turtle_spawn',
@@ -22,7 +22,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # TERMINAL 2: ui_node (CPP)
+        # USER INTERFACE NODE 
         ExecuteProcess(
             cmd=[
                 'xterm', '-hold', '-e',
@@ -32,7 +32,7 @@ def generate_launch_description():
         ),
 
         
-         # 4) NODO DISTANCE (python)
+         # DISTANCE NODE
         Node(
             package='assignment1_rt',
             executable='distance_node',
