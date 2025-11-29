@@ -1,5 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
 
 def generate_launch_description():
 
@@ -9,7 +10,8 @@ def generate_launch_description():
         Node(
             package='turtlesim',
             executable='turtlesim_node',
-            name='turtlesim'
+            name='turtlesim',
+            output='screen'
         ),
 
         # 2) TURTLE_SPAWN (python)
@@ -20,19 +22,21 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # 3) UI_NODE (cpp)
-        Node(
-            package='assignment1_rt',
-            executable='ui_node',
-            name='ui_node',
+        # TERMINAL 2: ui_node (CPP)
+        ExecuteProcess(
+            cmd=[
+                'xterm', '-hold', '-e',
+                'bash -c "ros2 run assignment1_rt ui_node"'
+            ],
             output='screen'
         ),
 
-        # 4) NODO DISTANCE (python)
+        
+         # 4) NODO DISTANCE (python)
         Node(
             package='assignment1_rt',
             executable='distance_node',
             name='distance',
             output='screen'
-        ),
+        )
     ])

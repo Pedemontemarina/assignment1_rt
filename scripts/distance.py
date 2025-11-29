@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# todo: se va in basso non funziona!!!
+
 '''Distance (node2):
 
  ✓A node that checks the relative distance between turtle1 and turtle2 and:
@@ -62,8 +64,9 @@ class DistanceController(Node):
         self.vel_pub2 = self.create_publisher(Twist,'/turtle2/cmd_vel',10)
 
         #---------- timer to call controls function periodically ------------
-        self.create_timer(0.1, self.controls) 
+        self.create_timer(0.1, self.controls)
 
+        self.get_logger().info("Distance node started.")
 
 
     def poset1_callback(self, msg):
@@ -133,7 +136,8 @@ class DistanceController(Node):
         # Check boundaries for turtle1
         if (self.x1_ < boundary_limit_min or self.x1_ > boundary_limit_max or
             self.y1_ < boundary_limit_min or self.y1_ > boundary_limit_max):
-            self.get_logger().warning('Turtle1 is too close to the boundary! Stopping turtle1.')
+            if moving == "turtle1":
+                self.get_logger().warning('Turtle1 is too close to the boundary! Stopping turtle1.')
             twist.linear.x = back_speed
             self.vel_pub1.publish(twist)
     
@@ -141,7 +145,8 @@ class DistanceController(Node):
         # Check boundaries for turtle2
         if (self.x2_ < boundary_limit_min or self.x2_ > boundary_limit_max or
             self.y2_ < boundary_limit_min or self.y2_ > boundary_limit_max):
-            self.get_logger().warning('Turtle2 is too close to the boundary! Stopping turtle2.')
+            if moving == "turtle2":
+                self.get_logger().warning('Turtle2 is too close to the boundary! Stopping turtle2.')
             twist.linear.x = back_speed
             self.vel_pub2.publish(twist)
 

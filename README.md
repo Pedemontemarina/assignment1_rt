@@ -45,37 +45,35 @@ ASSIGNMENT1_RT
 │   └── turtle_spawn.py
 ├── src
 │   └── user_interface.cpp
-└── start_all.sh
-
 ```
-
+---
 ## 3. Installation
 
 Clone this repository into your ROS2 workspace:
 
 ```bash
 cd ~/ros_ws/src
-git clone <repository-url> assignment1_rt
+git clone https://github.com/Pedemontemarina/assignment1_rt.git assignment1_rt
 cd ..
 colcon build 
 ```
 Source your workspace:
 ```bash
-source install/setup.bash
+source install/local_setup.bash
 ```
-
+---
 ## 4. Usage
 
-Start the entire system (turtlesim + nodes) with the provided bash script:
+A ROS2 launch file was appositely created to run all the nodes:
 
 ```bash 
-./start_all.sh
+ros2 launch assignment1_rt assignment_launch.py
 ```
-This script calls the ROS2 launch file: assignment_launch.py
 
-## 5. Nodes Description
+---
+## 5. Nodes Description 
 
-1) UI Node (node1) 
+1) **UI Node (node1)**
 
 Written in C++, it uses rclcpp and geometry_msgs/msg/twist.hpp. It implements a TurtleController class that publishes velocity commands on the turtle1/cmd_vel and turtle2/cmd_vel topics.
 
@@ -83,7 +81,7 @@ The node reads user commands in a continuous loop, validating both the turtle na
 
 The node uses private publishers and handles input errors, allowing the user to enter new commands indefinitely.
 
-2) Distance Node (node2)
+2) **Distance Node (node2)**
 
 Written in Python, it subscribes to both turtles’ positions to compute the Euclidean distance between them. Then it publishes it as a std_msgs/Float32 message on the topic /turtles_distance.
 
@@ -99,7 +97,7 @@ When a turtle is stopped due to safety constraints, the node can also command it
 
 The node makes extensive use of logging to report the current distance (if it has changed from the previous one) and any warnings when safety rules are triggered.
 
-
+---
 ## 6. Launch File
 
 The provided launch file starts and configures all the necessary nodes for the assignment:
@@ -108,26 +106,29 @@ The provided launch file starts and configures all the necessary nodes for the a
 
 2) turtle_spawn (Python) – Spawns the second turtle if it is not already present.
 
-3) UI Node (C++) – Launches the user interface node for controlling turtle velocity.
+3) UI Node (C++) – Launches the user interface node for controlling turtle velocity. Moreover this node is opened in a new terminal, allowing the user to interact with the turtle.
 
 4) Distance Node (Python) – Launches the node that monitors the turtles’ positions, computes the distance, and enforces safety rules.
 
-Nodes can be run also individually using the following command (eachone on a different terminal)
+Nodes can be run also individually using the following command (each one on a different terminal)
 ```bash
 ros2 run assignment1_rt <node_name>
 ```
-
+---
 ## 7. Requirements
 
-ROS2 Humble / Foxy / Galactic
+ROS2
 
 turtlesim package installed
 
+---
 ## 8. Author
 
 Pedemonte Marina
+
 Research Track I – Assignment 1
 
+---
 ## 9. Notes
 
 Thresholds and velocity limits can be adjusted in the code.

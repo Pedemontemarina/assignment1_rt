@@ -30,12 +30,19 @@ public:
     {
         while (rclcpp::ok()) //Check rclcpp’s status
         {
-            std::string turtle_name;
+            int turtle_name;
             float linear_vel, angular_vel;
 
-            std::cout << "Select which turtle to control (turtle1/turtle2): ";
+            std::cout << "Select which turtle to control (digit 1 for turtle1 / 2 for turtle2): ";
             std::cin >> turtle_name;
-            if (turtle_name != "turtle1" && turtle_name != "turtle2")
+            if (std::cin.fail())
+            {
+                std::cin.clear();       // error flag clearing
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard input
+                std::cout << "Input not valid!" << std::endl;
+                continue;
+            }
+            if (turtle_name != 1 && turtle_name != 2)
             {
                 std::cout << "Name not valid!" << std::endl;
                 continue; // restart loop
@@ -68,11 +75,11 @@ public:
             msg.angular.z = angular_vel;
 
             // Publish message
-            if (turtle_name == "turtle1")
+            if (turtle_name == 1)
             {
                 pub_turtle1_->publish(msg);
             }
-            else if (turtle_name == "turtle2")
+            else if (turtle_name == 2)
             {
                 pub_turtle2_->publish(msg);
             }
@@ -84,11 +91,11 @@ public:
             msg.linear.x = 0.0;
             msg.angular.z = 0.0;
 
-            if (turtle_name == "turtle1")
+            if (turtle_name == 1)
             {
                 pub_turtle1_->publish(msg);
             }
-            else if (turtle_name == "turtle2")
+            else if (turtle_name == 2)
             {
                 pub_turtle2_->publish(msg);
             }
