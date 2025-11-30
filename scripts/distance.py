@@ -116,38 +116,49 @@ class DistanceController(Node):
         threshold_distance = 0.5  # set your threshold here
         boundary_limit_min = 1.0
         boundary_limit_max = 10.0
-        twist = Twist()  # zero velocities
-        back_speed = -1.0 # backward speed
+        twist = Twist()
 
 
-        # Check relative distance
+        # Check relative distance (stop moving turtle)
         if distance < threshold_distance and moving is not None:
             self.get_logger().warning(f'{moving} is moving and too close: stopping it!')
-            # stop the moving turtle
+            
             if moving == "turtle1":
-                twist.linear.x = back_speed
+                twist.linear.x = - self.t1_vel.linear.x
+                twist.linear.y = - self.t1_vel.linear.y
+                twist.angular.z = - self.t1_vel.angular.z
                 self.vel_pub1.publish(twist)
             elif moving == "turtle2":
-                twist.linear.x = back_speed
+                twist.linear.x = - self.t2_vel.linear.x
+                twist.linear.y = - self.t2_vel.linear.y
+                twist.angular.z = - self.t2_vel.angular.z
                 self.vel_pub2.publish(twist)
-        
+
+
         # Check boundaries for turtle1
         if (self.x1_ < boundary_limit_min or self.x1_ > boundary_limit_max or
             self.y1_ < boundary_limit_min or self.y1_ > boundary_limit_max):
+
             if moving == "turtle1":
                 self.get_logger().warning('Turtle1 is too close to the boundary! Stopping turtle1.')
-            twist.linear.x = back_speed
+           
+            twist.linear.x = - self.t1_vel.linear.x
+            twist.linear.y = - self.t1_vel.linear.y
+            twiast.angular.z = - self.t1_vel.angular.z
             self.vel_pub1.publish(twist)
-    
+
 
         # Check boundaries for turtle2
         if (self.x2_ < boundary_limit_min or self.x2_ > boundary_limit_max or
             self.y2_ < boundary_limit_min or self.y2_ > boundary_limit_max):
+
             if moving == "turtle2":
                 self.get_logger().warning('Turtle2 is too close to the boundary! Stopping turtle2.')
-            twist.linear.x = back_speed
-            self.vel_pub2.publish(twist)
 
+            twist.linear.x = - self.t2_vel.linear.x
+            twist.linear.y = - self.t2_vel.linear.y
+            twist.angular.z = - self.t2_vel.angular.z
+            self.vel_pub2.publish(twist)
 
 
 def main(args=None):

@@ -93,7 +93,7 @@ A periodic timer is used to check both the distance and apply safety rules such 
 
 To achieve this, a function determines which turtle is currently moving by checking subscriptions to their velocity topics.
 
-When a turtle is stopped due to safety constraints, the node can also command it to move backward at a constant speed, untill it is in safe position.
+When a turtle is stopped due to safety constraints, the node can also command it to move backward by automatically inverting the user’s input until the turtle returns to a safe position. This additional behavior, although not explicitly required, was implemented to prevent situations where a turtle could become stuck in an unsafe area with no way for the user to move it back to safety.
 
 The node makes extensive use of logging to report the current distance (if it has changed from the previous one) and any warnings when safety rules are triggered.
 
