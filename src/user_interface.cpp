@@ -23,8 +23,36 @@ public:
         // Publisher per turtle1 e turtle2
         pub_turtle1_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel", 10);
         pub_turtle2_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle2/cmd_vel", 10);
+        pub_turtle3_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle3/cmd_vel", 10);
+        spawn_client_ = this->create_client<turtlesim::srv::Spawn>("spawn");
     }
 
+
+    void spawn_turtle(float x, float y, float theta)
+    {
+        auto spawn_request = std::make_shared<turtlesim::srv::Spawn::Request>();
+        spawn_request->x = x;
+        spawn_request->y = y;
+        spawn_request->theta = theta;
+        spawn_request->name = "turtle3";
+
+        while (!spawn_client_->wait_for_service(std::chrono::seconds(1))) {
+            RCLCPP_INFO(this->get_logger(), "Waiting for spawn service...");
+        }
+
+        auto spawn_result_future = spawn_client_->async_send_request(spawn_request);
+        if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), spawn_result_future)
+            == rclcpp::FutureReturnCode::SUCCESS)
+        {
+            auto result = spawn_result_future.get();
+            RCLCPP_INFO(this->get_logger(), "Spawned turtle '%s'", result->name.c_str());
+        }
+        else
+        {
+            RCLCPP_ERROR(this->get_logger(), "Failed to call spawn service");
+        }
+    }
+    
     // Loop user input
     void user_input_loop()
     {
@@ -116,6 +144,7 @@ int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv); //initialize ROS2
     auto node = std::make_shared<TurtleController>(); //create node
+    node->spawn_turtle(5.0, 5.0, 0.0); 
     node->user_input_loop(); //start user input loop
     rclcpp::shutdown(); //shutdown ROS2
     return 0;

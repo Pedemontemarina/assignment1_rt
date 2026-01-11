@@ -51,9 +51,11 @@ class DistanceController(Node):
             10)                     # queue size
 
         self.create_subscription(Pose,'/turtle2/pose',self.poset2_callback,10)
+        self.create_subscription(Pose,'/turtle3/pose',self.poset3_callback,10)
         
         #---------- publisher for distance------------
-        self.dist_pub = self.create_publisher(Float32,'distance_topic',10) 
+        self.dist_pub = self.create_publisher(Float32,'distance_topic',10)
+        self.dist13_pub = self.create_publisher(Float32,'distance1_3_topic',10) 
 
         #---------- subscribers for turtle velocities ------------
         self.create_subscription(Twist,'/turtle1/cmd_vel',self.t1_vel_callback,10)
@@ -76,6 +78,10 @@ class DistanceController(Node):
     def poset2_callback(self, msg):
         self.x2_ = msg.x
         self.y2_ = msg.y
+
+    def poset3_callback(self, msg):
+        self.x3_ = msg.x
+        self.y3_ = msg.y
     
     def t1_vel_callback(self, msg):
         self.t1_vel = msg
@@ -101,6 +107,7 @@ class DistanceController(Node):
         if None in (self.x1_, self.y1_, self.x2_, self.y2_):
             return
         distance = math.sqrt((self.x2_ - self.x1_)**2 + (self.y2_ - self.y1_)**2)
+        distance1_3 = math.sqrt((self.x3_ - self.x1_)**2 + (self.y3_ - self.y1_)**2)
 
         #print only if the distance is different from previous one
         
@@ -117,6 +124,10 @@ class DistanceController(Node):
         boundary_limit_min = 1.0
         boundary_limit_max = 10.0
         twist = Twist()
+
+        msg13 = Float32()
+        msg13.data = distance1_3
+        self.dist13_pub.publish(msg13)
 
 
         # Check relative distance (stop moving turtle)
