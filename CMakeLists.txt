@@ -37,8 +37,6 @@ endif()
 
 install(PROGRAMS scripts/turtle_spawn.py DESTINATION lib/${PROJECT_NAME} RENAME turtle_spawn)
 install(PROGRAMS scripts/distance.py DESTINATION lib/${PROJECT_NAME} RENAME distance_node)
-install(PROGRAMS scripts/node2.py DESTINATION lib/${PROJECT_NAME} RENAME node2)
-install(PROGRAMS scripts/node1.py DESTINATION lib/${PROJECT_NAME} RENAME node1)
 
 install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/)
 

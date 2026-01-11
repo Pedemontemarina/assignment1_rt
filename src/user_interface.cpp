@@ -11,6 +11,7 @@ stop, and the user should be able again to insert the command.
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "turtlesim/srv/spawn.hpp"
 #include <string>
 #include <iostream>
 #include <memory>
@@ -23,7 +24,6 @@ public:
         // Publisher per turtle1 e turtle2
         pub_turtle1_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel", 10);
         pub_turtle2_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle2/cmd_vel", 10);
-        pub_turtle3_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle3/cmd_vel", 10);
         spawn_client_ = this->create_client<turtlesim::srv::Spawn>("spawn");
     }
 
@@ -135,6 +135,8 @@ private:
     // Publisher
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_turtle1_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_turtle2_;
+    rclcpp::Client<turtlesim::srv::Spawn>::SharedPtr spawn_client_;
+
 };
 
 //Everything under private is NOT accessible from outside 
