@@ -20,6 +20,8 @@ from rclpy.node import Node
 from std_msgs.msg import Float32
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
+# need to create a custom message - new package
+from customMessages.msg import Obstacles
 import math
 
 '''super() gives you access to the parent class. In this case, 
@@ -63,13 +65,19 @@ class DistanceController(Node):
 
         #---------- publishers for turtle velocities ------------
         self.vel_pub1 = self.create_publisher(Twist,'/turtle1/cmd_vel',10)
-        self.vel_pub2 = self.create_publisher(Twist,'/turtle2/cmd_vel',10)
+        self.vel_pub2 = self.create_publisher(Twist,'/turt,le2/cmd_vel',10)
 
+        #exam-----------------------------
+        self.subscriber_obstacles= self.create_subscription(Obstacles, '/obstacles', self.obstacle_callback)
+       
         #---------- timer to call controls function periodically ------------
         self.create_timer(0.1, self.controls)
 
         self.get_logger().info("Distance node started.")
 
+
+    def obstacle_callback(self, msg: Obstacles):
+        self.distance = msg.distance #array inside the custom message
 
     def poset1_callback(self, msg):
         self.x1_ = msg.x # float
@@ -106,8 +114,20 @@ class DistanceController(Node):
 
         if None in (self.x1_, self.y1_, self.x2_, self.y2_):
             return
+
         distance = math.sqrt((self.x2_ - self.x1_)**2 + (self.y2_ - self.y1_)**2)
         distance1_3 = math.sqrt((self.x3_ - self.x1_)**2 + (self.y3_ - self.y1_)**2)
+
+        #obstacle distance - stopping turtle
+        threshold = 0.1
+        for el in self.distance:
+            if el < threshold:
+                if moving == 'turle1':
+                    self.vel_pub1.publish(Twist())
+                if moving == 'turle2':
+                    self.vel_pub2.publish(Twist())
+
+
 
         #print only if the distance is different from previous one
         
