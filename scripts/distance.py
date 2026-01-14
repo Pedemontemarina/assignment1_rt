@@ -21,6 +21,8 @@ from std_msgs.msg import Float32
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
 import math
+# need to create a custom message - new package
+from customMessages.msg import Obstacles
 
 '''super() gives you access to the parent class. In this case, 
     MinimalPublisher inherits from rclpy.node.Node. So super() allows you to call methods 
@@ -54,6 +56,9 @@ class DistanceController(Node):
         
         #---------- publisher for distance------------
         self.dist_pub = self.create_publisher(Float32,'distance_topic',10) 
+        #-----------subscriber obstacles, I imagine there is a custom type or that the message published is of the type Obstacle
+
+        self.subscriber_obstacles= self.create_subscription(Obstacles, '/obstacles', self.obstacle_callback)
 
         #---------- subscribers for turtle velocities ------------
         self.create_subscription(Twist,'/turtle1/cmd_vel',self.t1_vel_callback,10)
@@ -68,6 +73,8 @@ class DistanceController(Node):
 
         self.get_logger().info("Distance node started.")
 
+    def obstacle_callback(self, msg: Obstacles):
+        self.distance_obstacles = msg.distance #array inside the custom message
 
     def poset1_callback(self, msg):
         self.x1_ = msg.x # float
@@ -90,7 +97,9 @@ class DistanceController(Node):
             return "turtle1"
         if abs(self.t2_vel.linear.x) > 0.001 or abs(self.t2_vel.angular.z) > 0.001:
             return "turtle2"
-        return None     
+        return None 
+
+    
 
     def controls(self):
         
@@ -159,6 +168,22 @@ class DistanceController(Node):
             twist.linear.y = - self.t2_vel.linear.y
             twist.angular.z = - self.t2_vel.angular.z
             self.vel_pub2.publish(twist)
+        
+        # Check distance from Obstacles
+        Threshold = 0.1 # minimum distance allowed from obstacles
+        twist = Twist()
+        for el in self.distance_obstacles:
+            if el < Threshold:
+                if moving == "turtle1":
+                    self.vel_pub1.publish(twist)
+                    self.get_logger().warning('Turtle1 is too close to the obstacle! Stopping turtle1.')
+                if moving == "turtle2":
+                    self.vel_pub2.publish(twist)
+                    self.get_logger().warning('Turtle2 is too close to the obstacle! Stopping turtle2.')
+                break
+
+
+
 
 
 def main(args=None):
